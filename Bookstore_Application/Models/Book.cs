@@ -13,5 +13,5 @@ public class Book
     public int Stock { get; set; }
     
     public ICollection<Category> Categories { get; set; }
-    public OrderItem OrderItem { get; set; }
+    public ICollection<OrderItem> OrderItem { get; set; }
 }
