@@ -11,7 +11,6 @@ public class Book
     public double Price { get; set; }
     public string CategoryId { get; set; }
     public int Stock { get; set; }
-    
-    public ICollection<Category> Categories { get; set; }
-    public ICollection<OrderItem> OrderItem { get; set; }
+   //Reference 
+    public Category Category { get; set; }
 }

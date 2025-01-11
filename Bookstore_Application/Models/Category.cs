@@ -9,6 +9,5 @@ public class Category
     public string Name { get; set; }
     
     //Foreign key
-    public string BookId { get; set; }
-    public Book Book { get; set; }
+    //public ICollection<Book> Books { get; set; }
 }
