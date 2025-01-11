@@ -12,8 +12,12 @@ builder.Services.AddControllers();
 
 //Adding Loggers for Repository
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
+builder.Services.AddAutoMapper(typeof(Program));
+
+builder.Logging.ClearProviders(); // Clear default providers
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
+builder.Logging.SetMinimumLevel(LogLevel.Debug); // Ensure minimum level is Debug
 
 var app = builder.Build();
 
