@@ -10,6 +10,8 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        //To allow only unique values for categories name
+        modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
         base.OnModelCreating(modelBuilder);
         SeedData.Seed(modelBuilder);
     }
