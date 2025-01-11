@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bookstore_Application.Models;
 
@@ -6,6 +7,8 @@ public class Category
 {
     [Key]
     public string CategoryId { get; set; }
+    
+    [Index(IsUnique = true)]
     public string Name { get; set; }
     
     //Foreign key
