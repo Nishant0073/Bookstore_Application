@@ -7,30 +7,31 @@ public static class SeedData
 {
     public static void Seed(ModelBuilder modelBuilder)
     {
-        // Seeding Books
-        modelBuilder.Entity<Book>().HasData(
-            new Book { BookId = "B1", Title = "C# in Depth", Author = "Jon Skeet", Price = 45.99, CategoryId = "C1", Stock = 100 },
-            new Book { BookId = "B2", Title = "Clean Code", Author = "Robert C. Martin", Price = 39.99, CategoryId = "C2", Stock = 50 }
-        );
-
         // Seeding Categories
         modelBuilder.Entity<Category>().HasData(
-            new Category { CategoryId = "C1", Name = "Programming", BookId = "B1" },
-            new Category { CategoryId = "C2", Name = "Software Development", BookId = "B2" }
+            new Category { CategoryId = "1", Name = "Fiction" },
+            new Category { CategoryId = "2", Name = "Science" },
+            new Category { CategoryId = "3", Name = "History" }
+        );
+
+        // Seeding Books
+        modelBuilder.Entity<Book>().HasData(
+            new Book { BookId = "1", Title = "The Great Gatsby", Author = "F. Scott Fitzgerald", Price = 10.99, CategoryId = "1", Stock = 100 },
+            new Book { BookId = "2", Title = "The Theory of Everything", Author = "Stephen Hawking", Price = 15.99, CategoryId = "2", Stock = 50 },
+            new Book { BookId = "3", Title = "Sapiens: A Brief History of Humankind", Author = "Yuval Noah Harari", Price = 20.99, CategoryId = "3", Stock = 75 }
         );
 
         // Seeding Orders
         modelBuilder.Entity<Order>().HasData(
-            new Order { OrderId = "O1", UserId = "U1", OrderDate = DateTime.Now.AddDays(-5), TotalPrice = 85.98 },
-            new Order { OrderId = "O2", UserId = "U2", OrderDate = DateTime.Now.AddDays(-3), TotalPrice = 45.99 }
+            new Order { OrderId = "1", UserId = "user1", OrderDate = DateTime.Now, TotalPrice = 26.98 },
+            new Order { OrderId = "2", UserId = "user2", OrderDate = DateTime.Now.AddDays(-1), TotalPrice = 31.98 }
         );
 
         // Seeding OrderItems
-        
         modelBuilder.Entity<OrderItem>().HasData(
-            new OrderItem { OrderItemId = "OI1", Quantity = 1, Price = 45.99, BookId = "B1", OrderId = "O1" },
-            new OrderItem { OrderItemId = "OI2", Quantity = 1, Price = 39.99, BookId = "B2", OrderId = "O1" },
-            new OrderItem { OrderItemId = "OI3", Quantity = 1, Price = 45.99, BookId = "B1", OrderId = "O2" }
-        );
+            new OrderItem { OrderItemId = "1", Quantity = 2, Price = 10.99, BookId = "1", OrderId = "1" },
+            new OrderItem { OrderItemId = "2", Quantity = 1, Price = 15.99, BookId = "2", OrderId = "1" },
+            new OrderItem { OrderItemId = "3", Quantity = 3, Price = 20.99, BookId = "3", OrderId = "2" }
+        ); 
     }
 }
