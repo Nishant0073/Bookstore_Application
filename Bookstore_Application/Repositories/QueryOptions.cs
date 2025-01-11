@@ -14,5 +14,6 @@ public class QueryOptions<T> where T : class
     public string[] GetIncludes() => _includes;  
     public bool HasWhere => Where != null;
     public bool HasOrderBy => OrderBy != null;  
-    
+    public int PageNumber { get; set; } = 1;  // Pagination: Page number
+    public int PageSize { get; set; } = 10;  // Pagination: Number of items per page
 }
