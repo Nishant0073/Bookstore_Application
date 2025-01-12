@@ -8,8 +8,14 @@ public class MappingProfile: Profile
 {
     public MappingProfile()
     {
+        //Category
         CreateMap<CategoryRequestDTO, Category>();
         CreateMap<Category, CategoryReponseDTO>();
         CreateMap<CategoryPutDTO, Category>();
+        
+        //Book
+        CreateMap<BookPostDTO, Book>();
+        CreateMap<Book, BookResponseDTO>()
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.CategoryName));
     }
 }
