@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 
 //Adding Loggers for Repository
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
+builder.Services.AddScoped<IRepository<Book>,BookRepository>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Logging.ClearProviders(); // Clear default providers
