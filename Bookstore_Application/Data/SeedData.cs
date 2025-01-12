@@ -9,9 +9,9 @@ public static class SeedData
     {
         // Seeding Categories
         modelBuilder.Entity<Category>().HasData(
-            new Category { CategoryId = "CK1", Name = "Fiction" },
-            new Category { CategoryId = "CK2", Name = "Science" },
-            new Category { CategoryId = "CK3", Name = "History" }
+            new Category { CategoryId = "CK1", CategoryName = "Fiction" },
+            new Category { CategoryId = "CK2", CategoryName = "Science" },
+            new Category { CategoryId = "CK3", CategoryName = "History" }
         );
 
         // Seeding Books
