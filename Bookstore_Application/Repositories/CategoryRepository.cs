@@ -56,11 +56,11 @@ public class CategoryRepository : IRepository<Category>
         _logger.LogDebug("CategoryRepository.AddAsync:: Started");
         try
         {
-            var  existingCategory = await _context.Categories.FirstOrDefaultAsync( c => c.Name == entity.Name );
+            var  existingCategory = await _context.Categories.FirstOrDefaultAsync( c => c.CategoryName == entity.CategoryName );
             if (existingCategory != null)
             {
-                _logger.LogError($"CategoryRepository.AddAsync:: Error {existingCategory.Name} already exists");
-                throw new InvalidOperationException($"A category with the name '{entity.Name}' already exists.");
+                _logger.LogError($"CategoryRepository.AddAsync:: Error {existingCategory.CategoryName} already exists");
+                throw new InvalidOperationException($"A category with the name '{entity.CategoryName}' already exists.");
             }
 
             // Generate ID in CK+int format
@@ -89,23 +89,21 @@ public class CategoryRepository : IRepository<Category>
         _logger.LogDebug("CategoryRepository.UpdateAsync:: Started");
         try
         {
-            var  existingCategory = await _context.Categories.FirstOrDefaultAsync( c => c.Name == entity.Name );
+            var  existingCategory = await _context.Categories.FirstOrDefaultAsync( c => c.CategoryName == entity.CategoryName );
             if (existingCategory != null)
             {
-                _logger.LogError($"CategoryRepository.AddAsync:: Error {existingCategory.Name} already exists");
-                throw new InvalidOperationException($"A category with the name '{entity.Name}' already exists.");
+                _logger.LogError($"CategoryRepository.AddAsync:: Error {existingCategory.CategoryName} already exists");
+                throw new InvalidOperationException($"A category with the name '{entity.CategoryName}' already exists.");
             }
 
-            _context.Entry(existingCategory).State = EntityState.Detached;
             Category? category = await  _dbSet.FindAsync(entity.CategoryId);
             if (category == null)
             {
                 _logger.LogError($"CategoryRepository.UpdateAsync:: Error {entity.CategoryId} not found");
-                throw new Exception($"Category with id {entity.CategoryId} not found");
-            }
+                throw new Exception($"Category with id {entity.CategoryId} not found"); }
             
             
-            category.Name = entity.Name;
+            category.CategoryName = entity.CategoryName;
             _context.Update(category);
             await _context.SaveChangesAsync();
             _logger.LogDebug("CategoryRepository.UpdateAsync:: Finished");

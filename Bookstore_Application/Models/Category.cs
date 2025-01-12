@@ -9,7 +9,7 @@ public class Category
     public string CategoryId { get; set; }
     
     [Index(IsUnique = true)]
-    public string Name { get; set; }
+    public string CategoryName { get; set; }
     
     //Foreign key
     //public ICollection<Book> Books { get; set; }

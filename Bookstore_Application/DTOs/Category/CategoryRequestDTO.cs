@@ -6,5 +6,5 @@ public class CategoryRequestDTO
 {
     [Required(ErrorMessage = "Category Name is required")]
     [MaxLength(50, ErrorMessage = "Category Name cannot be more than 50 characters")]
-    public string Name { get; set; }
+    public string CategoryName { get; set; }
 }
