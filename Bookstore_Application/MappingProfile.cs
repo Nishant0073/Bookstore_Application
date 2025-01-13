@@ -17,5 +17,6 @@ public class MappingProfile: Profile
         CreateMap<BookPostDTO, Book>();
         CreateMap<Book, BookResponseDTO>()
             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.CategoryName));
+        CreateMap<BookPutDTO, Book>();
     }
 }
