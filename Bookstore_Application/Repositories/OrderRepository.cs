@@ -22,7 +22,7 @@ public class OrderRepository : IRepository<Order>
         _logger.LogDebug("OrderRepository.GetAllAsync :: Started");
         try
         {
-            IEnumerable<Order> orders = _orderDbSet.AsEnumerable();
+            IEnumerable<Order> orders = await _orderDbSet.Include(o => o.OrderItems).ToListAsync();
             _logger.LogDebug("OrderRepository.GetAllAsync :: Finished");
             return orders;
         }
