@@ -24,9 +24,6 @@ public class CategoriesController: ControllerBase
     public async Task<IActionResult> GetCategories()
     {
         _logger.LogDebug("CategoriesController.GetCategories :: Started");
-        Console.WriteLine("Debug log attempted"); // Debugging purpose
-
-        _logger.LogDebug("CategoriesController.GetCategories :: Started");
         try
         {
             IEnumerable<Category> categories = await _categoryRepo.GetAllAsync();
