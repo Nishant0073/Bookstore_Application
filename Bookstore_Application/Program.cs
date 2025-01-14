@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Bookstore_Application.Data;
 using Bookstore_Application.Models;
 using Bookstore_Application.Repositories;
@@ -9,10 +10,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
 
 //Adding Loggers for Repository
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 builder.Services.AddScoped<IRepository<Book>,BookRepository>();
+builder.Services.AddScoped<IRepository<Order>,OrderRepository>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Logging.ClearProviders(); // Clear default providers
