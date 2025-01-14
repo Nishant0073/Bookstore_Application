@@ -28,6 +28,7 @@ public class CategoryRepository : IRepository<Category>
         }
         catch (Exception e)
         {
+            _logger.LogError(e, "CategoryRepository.GetAllAsync:: Failed");
             throw new Exception("An error occured while getting all categories",e);
         }
     }
