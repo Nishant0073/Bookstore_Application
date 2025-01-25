@@ -20,6 +20,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 builder.Services.AddScoped<IRepository<Book>,BookRepository>();
 builder.Services.AddScoped<IRepository<Order>,OrderRepository>();
+builder.Services.AddScoped<IRepository<OrderItem>,OrderItemRepository>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Logging.ClearProviders(); // Clear default providers

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Bookstore_Application.Models;
 
@@ -15,7 +16,9 @@ public class OrderItem
     public Book Book { get; set; }
     
     //Foreign Key for Order
+    
     public string OrderId { get; set; }
+    
     public Order Order { get; set; }
     
     
