@@ -38,7 +38,7 @@ public class OrderRepository : IRepository<Order>
         _logger.LogDebug("OrderRepository.GetByIdAsync :: Started");
         try
         {
-            Order? order = await _orderDbSet.FindAsync(id);
+            Order? order = await _orderDbSet.Include(o => o.OrderItems).FirstOrDefaultAsync(order => order.OrderId == id);
             if (order == null)
             {
                 _logger.LogDebug("OrderRepository.GetByIdAsync :: Not found");
@@ -57,8 +57,8 @@ public class OrderRepository : IRepository<Order>
         _logger.LogDebug("OrderRepository.AddAsync :: Started");
         try
         {
-            var lastOrder = _orderDbSet.LastOrDefault();
-            int newOrderId = lastOrder!= null ? int.Parse(lastOrder.OrderId.Substring(2)) + 1 : 1;
+            var lastOrder = _orderDbSet.OrderByDescending(o => o.OrderId).FirstOrDefault();
+            int newOrderId = lastOrder!= null ? int.Parse(lastOrder.OrderId.Substring(2)) + 1 : 0;
             
             entity.OrderId = "OK" + newOrderId;
             await _orderDbSet.AddAsync(entity);
