@@ -32,7 +32,10 @@ public class OrderItemRepository: IRepository<OrderItem>
        _logger.LogInformation("OrderItemRepository.AddOrderItem :: started ");
        try
        {
-           var lastOrderItem = await _orderItemDbSet.OrderByDescending(OrderItem => OrderItem.OrderItemId).FirstOrDefaultAsync();
+           var lastOrderItem = await _orderItemDbSet
+               .OrderByDescending(o => Convert.ToInt32(o.OrderItemId.Substring(3)))
+               .FirstOrDefaultAsync();
+           
            int num = int.Parse((lastOrderItem != null) ? lastOrderItem.OrderItemId.Substring(3) : "0") + 1;
            entity.OrderItemId = "OIK" + num.ToString();
            _context.Entry(lastOrderItem).State = EntityState.Detached;

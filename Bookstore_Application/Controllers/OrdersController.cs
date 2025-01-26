@@ -105,22 +105,22 @@ public class OrdersController : ControllerBase
             orderPrice = Math.Round(orderPrice, 2);
             Order newOrder = new Order
             {
-               UserId = "user1",
-               OrderDate = DateTime.Now,
-               TotalPrice = orderPrice,
+                UserId = "user1",
+                OrderDate = DateTime.Now,
+                TotalPrice = orderPrice,
             };
             
             Order currentOrder = await _repository.AddAsync(newOrder);
             _logger.LogDebug($"OrderController::CreateOrder current order:: {currentOrder.OrderId}");
-
             foreach (OrderItemPostDTO orderItemPostDto in orderPostDto.OrderItems )
             {
                 OrderItem entity = _mapper.Map<OrderItem>(orderItemPostDto);
                 entity.OrderId = currentOrder.OrderId;
                 OrderItem orderItem = await _orderItemRepository.AddAsync(entity);
+                currentOrder.OrderItems.Add(orderItem);
             }
-            Order currOrder = await _repository.GetByIdAsync(currentOrder.OrderId);
-            OrderResponseDTO responseDto = _mapper.Map<OrderResponseDTO>(currOrder);
+            
+            OrderResponseDTO responseDto = _mapper.Map<OrderResponseDTO>(currentOrder);
             _logger.LogDebug("OrderController::CreateOrder :: Finished");
             return Ok(responseDto);
         }
@@ -135,6 +135,31 @@ public class OrdersController : ControllerBase
             };
 
             return BadRequest(errorResponse); 
+        }
+    }
+
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteOrder(string id)
+    {
+        _logger.LogDebug("OrderController::DeleteOrder :: Started");
+        try
+        {
+            await _repository.DeleteAsync(id);
+            _logger.LogDebug("OrderController::DeleteOrder :: Finished");
+            return Ok($"Order with id {id} successfully deleted");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "OrderController::DeleteOrder :: Error");
+            var errorResponse = new ErrorResponse
+            {
+                Message = ex.Message,
+                StackTrace = ex.StackTrace,
+                InnerExceptionMessage = ex.InnerException?.Message
+            };
+ 
+            return BadRequest(errorResponse);
         }
     }
     public bool ValidateOrderDto(OrderPostDTO orderPostDto)

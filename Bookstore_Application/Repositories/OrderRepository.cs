@@ -57,7 +57,11 @@ public class OrderRepository : IRepository<Order>
         _logger.LogDebug("OrderRepository.AddAsync :: Started");
         try
         {
-            var lastOrder = _orderDbSet.OrderByDescending(o => o.OrderId).FirstOrDefault();
+            var lastOrder = _orderDbSet
+                .OrderByDescending(o => Convert.ToInt32(o.OrderId.Substring(2)))
+                .FirstOrDefault();
+
+
             int newOrderId = lastOrder!= null ? int.Parse(lastOrder.OrderId.Substring(2)) + 1 : 0;
             
             entity.OrderId = "OK" + newOrderId;

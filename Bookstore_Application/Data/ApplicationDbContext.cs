@@ -12,6 +12,8 @@ public class ApplicationDbContext : DbContext
     {
         //To allow only unique values for categories name
         modelBuilder.Entity<Category>().HasIndex(c => c.CategoryName).IsUnique();
+        modelBuilder.Entity<Order>().HasMany(o => o.OrderItems).WithOne(o => o.Order).HasForeignKey(o => o.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
         base.OnModelCreating(modelBuilder);
         SeedData.Seed(modelBuilder);
     }
