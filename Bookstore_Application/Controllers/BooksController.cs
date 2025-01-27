@@ -164,7 +164,7 @@ public class BooksController: ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpGet("/page")]
     public async Task<ActionResult<PaginatedList<Book>>> GetBooksPagination([FromQuery]int pageNumber=1,[FromQuery] int pageSize=10)
     {
         if(!ModelState.IsValid)
@@ -176,7 +176,7 @@ public class BooksController: ControllerBase
             {
                 return BadRequest("PageNumber and PageSize must be greater than 0");
             }
-             PaginatedList<Book> paginatedList = _bookRepository.GetPaginatedItems(pageNumber, pageSize);
+            PaginatedList<Book> paginatedList = _bookRepository.GetPaginatedItems(pageNumber, pageSize);
             if(paginatedList == null)
                 return NotFound();
             
