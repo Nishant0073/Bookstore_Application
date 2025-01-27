@@ -47,7 +47,7 @@ public class BooksController: ControllerBase
         }
     }
     
-    [HttpGet("{id}")]
+    [HttpGet("id/{id}")]
     public    async Task<IActionResult> GetBook(string id)
     {
         _logger.LogDebug("BookController.GetBook :: Started");
@@ -164,7 +164,7 @@ public class BooksController: ControllerBase
         }
     }
 
-    [HttpGet("/page")]
+    [HttpGet("page")]
     public async Task<ActionResult<PaginatedList<Book>>> GetBooksPagination([FromQuery]int pageNumber=1,[FromQuery] int pageSize=10)
     {
         if(!ModelState.IsValid)
