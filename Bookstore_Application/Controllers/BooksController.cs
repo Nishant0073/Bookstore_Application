@@ -164,5 +164,34 @@ public class BooksController: ControllerBase
         }
     }
 
-    
+    [HttpGet]
+    public async Task<ActionResult<PaginatedList<Book>>> GetBooksPagination([FromQuery]int pageNumber=1,[FromQuery] int pageSize=10)
+    {
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        _logger.LogDebug("BookController.GetBooks :: Started");
+        try
+        {
+            if (pageNumber <= 0 || pageSize <= 0)
+            {
+                return BadRequest("PageNumber and PageSize must be greater than 0");
+            }
+             PaginatedList<Book> paginatedList = _bookRepository.GetPaginatedItems(pageNumber, pageSize);
+            if(paginatedList == null)
+                return NotFound();
+            
+            return Ok(paginatedList);
+        }
+        catch(Exception e)
+        {
+            _logger.LogError("BookController.GetBooks :: Failed");
+            var errorResponse = new ErrorResponse
+            {
+                Message = e.Message,
+                StackTrace = e.StackTrace,
+                InnerExceptionMessage = e.InnerException?.Message
+            };
+            return BadRequest(errorResponse); 
+        }
+    }
 }
