@@ -66,7 +66,7 @@ public class CategoryRepository : IRepository<Category>
 
             // Generate ID in CK+int format
             var lastCategory = await _context.Categories
-                .OrderByDescending(c => c.CategoryId)
+                .OrderByDescending(c => Convert.ToInt32(c.CategoryId.Substring(2)))
                 .FirstOrDefaultAsync();
 
             int nextId = lastCategory != null
