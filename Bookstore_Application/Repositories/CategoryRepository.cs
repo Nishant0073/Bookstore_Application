@@ -138,4 +138,9 @@ public class CategoryRepository : IRepository<Category>
             throw new KeyNotFoundException($"Error occured while deleting category", e);
         }
     }
+
+    public PaginatedList<Book> GetPaginatedItems(int pageNumber, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
 }

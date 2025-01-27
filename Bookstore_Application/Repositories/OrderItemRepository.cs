@@ -61,4 +61,9 @@ public class OrderItemRepository: IRepository<OrderItem>
     {
         throw new NotImplementedException();
     }
+
+    public PaginatedList<Book> GetPaginatedItems(int pageNumber, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
 }

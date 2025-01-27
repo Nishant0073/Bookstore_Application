@@ -144,4 +144,9 @@ public class BookRepository:IRepository<Book>
             throw new Exception($"Error occured while deleting book", e);
         }
     }
+
+    public PaginatedList<Book> GetPaginatedItems(int pageNumber, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
 }

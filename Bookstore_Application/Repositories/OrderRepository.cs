@@ -126,4 +126,9 @@ public class OrderRepository : IRepository<Order>
             throw new Exception($"OrderRepository.DeleteAsync :: Error: {ex.Message}", ex.InnerException);
         }
     }
+
+    public PaginatedList<Book> GetPaginatedItems(int pageNumber, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
 }
