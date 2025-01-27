@@ -64,7 +64,7 @@ public class BookRepository:IRepository<Book>
             }
 
             var  lastBook = await _booksDbSet
-                .OrderByDescending(c => c.BookId)
+                .OrderByDescending(c => Convert.ToInt32(c.BookId.Substring(2)))
                 .FirstOrDefaultAsync();
 
             int nextId = lastBook != null
@@ -147,6 +147,17 @@ public class BookRepository:IRepository<Book>
 
     public PaginatedList<Book> GetPaginatedItems(int pageNumber, int pageSize)
     {
-        throw new NotImplementedException();
+        _logger.LogDebug("BookRepository.GetPaginatedItems:: Started");
+        try
+        {
+            int totalCount = _booksDbSet.Count();
+            var books = _booksDbSet.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            return new PaginatedList<Book>(books,totalCount,pageNumber, pageSize);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }
