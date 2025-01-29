@@ -19,22 +19,23 @@ public class UserService: IUserService
         _jwt = jwt;
     }
 
-    public async Task<IdentityResult> CreateUserAsync(string email, string password)
+    
+    public async Task<object> CreateUserAsync(string email, string password)
     {
         _logger.LogDebug("CreateUserAsync:: started");
         try
         {
-
-
             var user = new IdentityUser()
             {
                 UserName = email,
                 Email = email,
+                EmailConfirmed = true
             };
+
             var userWithSameEmail = await _userManager.FindByEmailAsync(email);
             if (userWithSameEmail != null)
             {
-                throw new Exception($"Email {email} is already in use");
+                return new { Success = false, Message = $"Email {email} is already in use" };
             }
 
             var result = await _userManager.CreateAsync(user, password);
@@ -42,13 +43,19 @@ public class UserService: IUserService
             {
                 await _userManager.AddToRoleAsync(user, Authorization.Roles.User.ToString());
             }
+
             _logger.LogDebug("CreateUserAsync:: Succeeded");
-            return result.Succeeded ? IdentityResult.Success : IdentityResult.Failed();
+            return new 
+            { 
+                Success = result.Succeeded, 
+                Errors = result.Errors.Select(e => e.Description).ToList() 
+            };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "CreateUserAsync:: Failed");
-            throw ex;
+            return new { Success = false, Message = "An error occurred while creating the user." };
         }
     }
+
 }

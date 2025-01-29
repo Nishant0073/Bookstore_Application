@@ -4,5 +4,5 @@ namespace Bookstore_Application.Services;
 
 public interface IUserService
 {
-    public Task<IdentityResult> CreateUserAsync(string email, string password);
+    public Task<object> CreateUserAsync(string email, string password);
 }

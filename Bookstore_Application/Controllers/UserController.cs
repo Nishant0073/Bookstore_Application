@@ -3,6 +3,8 @@ using Bookstore_Application.Services;
 using Microsoft.AspNetCore.Mvc;
 namespace Bookstore_Application.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
 public class UserController: Controller
 {
     private readonly IUserService _userService;
@@ -14,13 +16,14 @@ public class UserController: Controller
         this._userService = userService;
     }
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterAsync(RegistrationModel registrationModel)
+    public async Task<IActionResult> RegisterAsync([FromBody]RegistrationModel registrationModel)
     {
         _logger.LogInformation("UserController::RegisterAsync:: Started");
         
         try
         {
-            var result = _userService.CreateUserAsync(registrationModel.Email, registrationModel.Password);
+            var result = await _userService.CreateUserAsync(registrationModel.Email, registrationModel.Password);
+            
             _logger.LogInformation("UserController::RegisterAsync:: End");
             return Ok(result);
             

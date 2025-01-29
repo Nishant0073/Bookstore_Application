@@ -18,12 +18,13 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 //user manager service
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddSingleton<JWT>(sp =>
     sp.GetRequiredService<IOptions<JWT>>().Value);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -93,6 +94,5 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(e, "An error occurred while seeding the database.");
     }
 }
-
 
 app.Run();
