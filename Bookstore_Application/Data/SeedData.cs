@@ -1,12 +1,20 @@
+using Bookstore_Application.Constants;
 using Bookstore_Application.Models;
+using Bookstore_Application.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore_Application.Data;
 
-public static class SeedData
+public class SeedData
 {
+
+    public SeedData()
+    {
+    }
     public static void Seed(ModelBuilder modelBuilder)
     {
+        
         // Seeding Categories
         modelBuilder.Entity<Category>().HasData(
             new Category { CategoryId = "CK1", CategoryName = "Fiction" },
@@ -34,5 +42,20 @@ public static class SeedData
             new OrderItem { OrderItemId = "OIK2", Quantity = 1, Price = 15.99, BookId = "BK2", OrderId = "OK1" },
             new OrderItem { OrderItemId = "OIK3", Quantity = 3, Price = 20.99, BookId = "BK3", OrderId = "OK2" }
         ); 
+    }
+
+    public static async Task SeedUsers(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+    {
+        //seeding roles
+        await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.User.ToString()));
+        await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.Admin.ToString()));
+        
+        //seed user
+        var defaultUser = new IdentityUser { UserName = Authorization._defaultEmail, Email = Authorization._defaultEmail ,EmailConfirmed = true };
+        if (userManager.Users.All(u => u.Id != defaultUser.Id))
+        {
+            await userManager.CreateAsync(defaultUser, Authorization._defaultPassword);
+            await userManager.AddToRoleAsync(defaultUser, Authorization._defaultRole.ToString());
+        }
     }
 }
