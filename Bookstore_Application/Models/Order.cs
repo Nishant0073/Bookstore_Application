@@ -1,4 +1,6 @@
 
+using Microsoft.AspNetCore.Identity;
+
 namespace Bookstore_Application.Models;
 
 public class Order
@@ -10,5 +12,8 @@ public class Order
     
     public string OrderStatus { get; set; } = "Pending";
     public ICollection<OrderItem> OrderItems { get; set; } 
+    
+    // Navigation property for AspNetUsers
+    public IdentityUser User { get; set; }
 
 }
