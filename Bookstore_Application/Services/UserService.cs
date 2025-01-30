@@ -1,6 +1,11 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Bookstore_Application.Constants;
+using Bookstore_Application.Models;
 using Bookstore_Application.Settings;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Bookstore_Application.Services;
 
@@ -58,4 +63,71 @@ public class UserService: IUserService
         }
     }
 
+    public async Task<AuthenticationModel> GetTokenAsync(TokenRequest model)
+    {
+        _logger.LogDebug("GetTokenAsync:: started");
+        try
+        {
+            AuthenticationModel authenticationModel = new AuthenticationModel();
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                authenticationModel.IsAuthenticated = false;
+                authenticationModel.Message = "No user registered with this email";
+                return authenticationModel;
+            }
+
+            if (await _userManager.CheckPasswordAsync(user, model.Password))
+            {
+               authenticationModel.IsAuthenticated = true;
+               JwtSecurityToken securityToken = await CreateJwtToken(user);
+               authenticationModel.Token = new JwtSecurityTokenHandler().WriteToken(securityToken);
+               authenticationModel.Email = user.Email;
+               authenticationModel.Username = user.UserName;
+               var roleList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+               authenticationModel.Roles = roleList.ToList();
+               return authenticationModel;
+            } 
+            authenticationModel.IsAuthenticated = false;
+            authenticationModel.Message = "Invalid login attempt";
+            return authenticationModel;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "GetTokenAsync:: Failed");
+            throw new Exception("An error occurred while getting the token", ex);
+        }
+    }
+
+    private async Task<JwtSecurityToken> CreateJwtToken(IdentityUser user)
+    {
+        var userClaims = await _userManager.GetClaimsAsync(user);
+        var roles = await _userManager.GetRolesAsync(user);
+        var roleClaims = new List<Claim>();
+
+        for (int i = 0; i < roles.Count; i++)
+        {
+            roleClaims.Add(new Claim(ClaimTypes.Role, roles[i]));
+        }
+
+        var claim = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim("uid", user.UserName),
+        }.Union(userClaims).Union(roleClaims);
+        
+        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
+        var credentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+
+        var jwtSecurityToken = new JwtSecurityToken(
+            issuer:_jwt.Issuer,
+            audience:_jwt.Audience,
+            claims: claim,
+            expires: DateTime.Now.AddMinutes(_jwt.DurationInMinutes),
+            signingCredentials: credentials
+        );
+        return jwtSecurityToken;
+    }
 }
