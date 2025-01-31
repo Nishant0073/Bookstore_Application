@@ -6,6 +6,7 @@ using Bookstore_Application.Models;
 using Bookstore_Application.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Exception = System.Exception;
 
 namespace Bookstore_Application.Services;
 
@@ -97,6 +98,37 @@ public class UserService: IUserService
             _logger.LogError(ex, "GetTokenAsync:: Failed");
             throw new Exception("An error occurred while getting the token", ex);
         }
+    }
+
+    public async Task<string> AddRoleAsync(AddRoleModel model)
+    {
+        _logger.LogDebug("AddRoleAsync:: started");
+        try
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return "No user registered with this email";
+            }
+
+            if (await _userManager.CheckPasswordAsync(user, model.Password))
+            {
+                var roleExists = Enum.GetNames(typeof(Authorization.Roles))
+                    .Any(x => x.ToLower() == model.Role.ToLower());
+                if (roleExists)
+                {
+                    var validRole = Enum.GetValues(typeof(Authorization.Roles)).Cast<Authorization.Roles>().Where(x => x.ToString().ToLower() == model.Role.ToLower()).FirstOrDefault();
+                    await _userManager.AddToRoleAsync(user, validRole.ToString());
+                    return $"Added {model.Role} to user {model.Email}";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "AddRoleAsync:: Failed");
+            throw new Exception("An error occurred while adding role", ex);
+        }
+        return $"Incorrect password for user {model.Email}"; 
     }
 
     private async Task<JwtSecurityToken> CreateJwtToken(IdentityUser user)

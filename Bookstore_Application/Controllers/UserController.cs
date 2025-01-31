@@ -66,5 +66,27 @@ public class UserController: Controller
             return StatusCode(500, errorResponse); // Or log errorResponse
         }
     }
+
+    [HttpPost("add-role")]
+    public async Task<IActionResult> AddRoleAsync([FromBody] AddRoleModel addRoleModel)
+    {
+        _logger.LogInformation("UserController::AddRoleAsync:: Started");
+        try
+        {
+            var result = await _userService.AddRoleAsync(addRoleModel);
+            _logger.LogInformation("UserController::AddRoleAsync:: End");
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var errorResponse = new ErrorResponse
+            {
+                Message = e.Message,
+                StackTrace = e.StackTrace,
+                InnerExceptionMessage = e.InnerException?.Message
+            };
+            return StatusCode(500, errorResponse); // Or log errorResponse
+        }
+    }
     
 }

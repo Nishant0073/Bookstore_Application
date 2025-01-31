@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Bookstore_Application.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 public class OrdersController : ControllerBase
 {

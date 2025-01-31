@@ -3,11 +3,13 @@ using Bookstore_Application.Data;
 using Bookstore_Application.DTOs.Category;
 using Bookstore_Application.Models;
 using Bookstore_Application.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace Bookstore_Application.Controllers;
 
 [ApiController]
 [Route($"/api/[controller]")]
+[Authorize]
 public class CategoriesController: ControllerBase
 {
     private readonly ILogger<CategoriesController> _logger;
