@@ -42,5 +42,29 @@ public class UserController: Controller
             return StatusCode(500, errorResponse); // Or log errorResponse
         }
     }
+
+    [HttpPost("token")]
+    public async Task<IActionResult> GetTokenTask(TokenRequest tokenRequest)
+    {
+        _logger.LogInformation("UserController::GetTokenTask:: Started");
+        try
+        {
+            var result = await _userService.GetTokenAsync(tokenRequest);
+            _logger.LogInformation("UserController::GetTokenTask:: End");
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+           
+            var errorResponse = new ErrorResponse
+            {
+                Message = e.Message,
+                StackTrace = e.StackTrace,
+                InnerExceptionMessage = e.InnerException?.Message
+            };
+
+            return StatusCode(500, errorResponse); // Or log errorResponse
+        }
+    }
     
 }

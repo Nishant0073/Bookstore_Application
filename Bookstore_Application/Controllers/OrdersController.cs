@@ -3,11 +3,13 @@ using Bookstore_Application.DTOs.Order;
 using Bookstore_Application.DTOs.OrderItems;
 using Bookstore_Application.Models;
 using Bookstore_Application.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookstore_Application.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class OrdersController : ControllerBase
 {
