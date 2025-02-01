@@ -1,6 +1,7 @@
 using AutoMapper;
 using Bookstore_Application.Data;
 using Bookstore_Application.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore_Application.Repositories;
@@ -51,6 +52,8 @@ public class BookRepository:IRepository<Book>
             throw new Exception("BookRepository.GetByIdAsync An error occured while getting book", e);
         }
     }
+    
+    [Authorize(Roles="Admin")]
     public async Task<Book> AddAsync(Book entity)
     {
         _logger.LogDebug("BookRepository.AddAsync:: Started");
@@ -84,6 +87,7 @@ public class BookRepository:IRepository<Book>
         }
     }
 
+    [Authorize(Roles="Admin")]
     public async Task<Book> UpdateAsync(Book entity)
     {
         _logger.LogDebug("BookRepository.UpdateAsync:: Started");
@@ -124,6 +128,7 @@ public class BookRepository:IRepository<Book>
         }
     }
 
+    [Authorize(Roles="Admin")]
     public async Task DeleteAsync(string id)
     {
         _logger.LogDebug("BookRepository.DeleteAsync:: Started");
