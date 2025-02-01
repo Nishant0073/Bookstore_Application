@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using Bookstore_Application.Data;
@@ -43,7 +44,8 @@ builder.Services.AddAuthentication(options =>
 
         ValidIssuer = builder.Configuration["JWT:Issuer"],
         ValidAudience = builder.Configuration["JWT:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+        RoleClaimType = ClaimTypes.Role
 
     };
 
@@ -60,10 +62,12 @@ builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 builder.Services.AddScoped<IRepository<Book>,BookRepository>();
 builder.Services.AddScoped<IRepository<Order>,OrderRepository>();
 builder.Services.AddScoped<IRepository<OrderItem>,OrderItemRepository>();
+
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 
+
 builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddHttpContextAccessor();
 
 builder.Logging.ClearProviders(); // Clear default providers
 builder.Logging.AddConsole();

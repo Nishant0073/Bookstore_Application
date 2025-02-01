@@ -2,12 +2,14 @@ using AutoMapper;
 using Bookstore_Application.DTOs.Category;
 using Bookstore_Application.Models;
 using Bookstore_Application.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookstore_Application.Controllers;
 
 [ApiController]
 [Route("/api/[controller]")]
+[Authorize(Roles = "Admin")]
 public class BooksController: ControllerBase
 {
     private readonly ILogger<BooksController> _logger;
@@ -22,6 +24,7 @@ public class BooksController: ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetBooks()
     {
         _logger.LogDebug("BookController.GetBooks :: Started");
@@ -47,6 +50,7 @@ public class BooksController: ControllerBase
         }
     }
     
+    [AllowAnonymous]
     [HttpGet("id/{id}")]
     public    async Task<IActionResult> GetBook(string id)
     {
@@ -165,6 +169,7 @@ public class BooksController: ControllerBase
     }
 
     [HttpGet("page")]
+    [AllowAnonymous]
     public async Task<ActionResult<PaginatedList<Book>>> GetBooksPagination([FromQuery]int pageNumber=1,[FromQuery] int pageSize=10)
     {
         if(!ModelState.IsValid)

@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Bookstore_Application.Controllers;
 
 [ApiController]
-[Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
+[Authorize]
 public class OrdersController : ControllerBase
 {
     private readonly ILogger<OrdersController> _logger;
@@ -107,7 +107,6 @@ public class OrdersController : ControllerBase
             orderPrice = Math.Round(orderPrice, 2);
             Order newOrder = new Order
             {
-                UserId = "user1",
                 OrderDate = DateTime.Now,
                 TotalPrice = orderPrice,
             };

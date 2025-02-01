@@ -1,6 +1,6 @@
 namespace Bookstore_Application.Services;
 
-public class IUserContextService
+public interface IUserContextService
 {
     string UserId { get; }
     string Role { get; }

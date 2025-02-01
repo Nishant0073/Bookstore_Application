@@ -53,7 +53,6 @@ public class CategoryRepository : IRepository<Category>
         }
     }
 
-    [Authorize(Roles="Admin")]
     public async Task<Category> AddAsync(Category entity)
     {
         _logger.LogDebug("CategoryRepository.AddAsync:: Started");
@@ -87,7 +86,6 @@ public class CategoryRepository : IRepository<Category>
         }
     }
 
-    [Authorize(Roles="Admin")]
     public async Task<Category> UpdateAsync(Category entity)
     {
         _logger.LogDebug("CategoryRepository.UpdateAsync:: Started");
@@ -120,7 +118,6 @@ public class CategoryRepository : IRepository<Category>
         }
     }
 
-    [Authorize(Roles="Admin")]
     public async Task DeleteAsync(string id)
     {
         _logger.LogDebug("CategoryRepository.DeleteAsync:: Started");

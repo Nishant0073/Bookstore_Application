@@ -1,19 +1,24 @@
+using System.Net;
 using Bookstore_Application.Data;
 using Bookstore_Application.Models;
 using Bookstore_Application.Repositories;
+using Bookstore_Application.Services;
 using Microsoft.EntityFrameworkCore;
+using Authorization = Bookstore_Application.Constants.Authorization;
 
 public class OrderRepository : IRepository<Order>
 {
     private readonly DbSet<Order>_orderDbSet;
     private readonly ApplicationDbContext _context;
     private readonly ILogger<OrderRepository> _logger;
+    private readonly IUserContextService _userContextService;
 
-    public OrderRepository(ApplicationDbContext context, ILogger<OrderRepository> logger)
+    public OrderRepository(ApplicationDbContext context, ILogger<OrderRepository> logger,IUserContextService userContextService)
     {
        _context = context;
        _logger = logger;
        _orderDbSet = context.Set<Order>();
+       _userContextService = userContextService;
     }
 
 
@@ -22,7 +27,12 @@ public class OrderRepository : IRepository<Order>
         _logger.LogDebug("OrderRepository.GetAllAsync :: Started");
         try
         {
-            IEnumerable<Order> orders = await _orderDbSet.Include(o => o.OrderItems).ToListAsync();
+            IQueryable<Order> query = _orderDbSet.Include(o => o.OrderItems);
+            if (_userContextService.Role != "Admin")
+            {
+                query = query.Where(o => o.UserId == _userContextService.UserId);
+            }
+            var orders = await query.ToListAsync();
             _logger.LogDebug("OrderRepository.GetAllAsync :: Finished");
             return orders;
         }
@@ -38,7 +48,12 @@ public class OrderRepository : IRepository<Order>
         _logger.LogDebug("OrderRepository.GetByIdAsync :: Started");
         try
         {
-            Order? order = await _orderDbSet.Include(o => o.OrderItems).FirstOrDefaultAsync(order => order.OrderId == id);
+            IQueryable<Order> query = _orderDbSet.Include(o => o.OrderItems);
+            if (_userContextService.Role != "Admin")
+            {
+                query = query.Where(o => o.UserId == _userContextService.UserId).Where( o => o.OrderId == id);
+            }
+            Order? order = await query.FirstOrDefaultAsync();
             if (order == null)
             {
                 _logger.LogDebug("OrderRepository.GetByIdAsync :: Not found");
@@ -57,6 +72,9 @@ public class OrderRepository : IRepository<Order>
         _logger.LogDebug("OrderRepository.AddAsync :: Started");
         try
         {
+            if(_userContextService.UserId==null)
+                throw new Exception($"OrderRepository.AddAsync :: User id is null");
+            entity.UserId = _userContextService.UserId;
             var lastOrder = _orderDbSet
                 .OrderByDescending(o => Convert.ToInt32(o.OrderId.Substring(2)))
                 .FirstOrDefault();
@@ -81,7 +99,8 @@ public class OrderRepository : IRepository<Order>
         _logger.LogDebug("OrderRepository.UpdateAsync :: Started");
         try
         {
-            var existingOrder = _orderDbSet.Find(entity.OrderId);
+            var query = _orderDbSet.Where(o => o.UserId == _userContextService.UserId).Where(o => o.OrderId == entity.OrderId);
+            var existingOrder = await query.FirstOrDefaultAsync();
             if (existingOrder == null)
             {
                 _logger.LogDebug("OrderRepository.UpdateAsync :: Not found");
@@ -110,7 +129,8 @@ public class OrderRepository : IRepository<Order>
         _logger.LogDebug("OrderRepository.DeleteAsync :: Started");
         try
         {
-            var order = await _orderDbSet.FindAsync(id);
+            var query = _orderDbSet.Where(o => o.UserId == _userContextService.UserId).Where(o => o.OrderId == id);
+            var order = await query.FirstOrDefaultAsync();
             if (order == null)
             {
                 _logger.LogDebug("OrderRepository.DeleteAsync :: Not found");

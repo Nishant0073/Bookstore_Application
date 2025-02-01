@@ -9,7 +9,7 @@ namespace Bookstore_Application.Controllers;
 
 [ApiController]
 [Route($"/api/[controller]")]
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class CategoriesController: ControllerBase
 {
     private readonly ILogger<CategoriesController> _logger;
@@ -23,6 +23,7 @@ public class CategoriesController: ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetCategories()
     {
         _logger.LogDebug("CategoriesController.GetCategories :: Started");
@@ -47,6 +48,7 @@ public class CategoriesController: ControllerBase
     }
 
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public    async Task<IActionResult> GetCategory(string id)
     {
         _logger.LogDebug("CategoriesController.GetCategory :: Started");
